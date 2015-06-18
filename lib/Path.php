@@ -12,22 +12,30 @@ namespace Jelix\FileUtilities;
 
 class Path
 {
+    const NORM_ADD_TRAILING_SLASH = 1;
+
     /**
      * normalize a path : translate '..', '.', replace '\' by '/' and so on..
      * support windows path.
      *
      * @param string $path
+     * @param int    $options see NORM_* const
      *
      * @return string the normalized path
      */
-    public static function normalizePath($path)
+    public static function normalizePath($path, $options = 0)
     {
         list($prefix, $path, $absolute) = self::_normalizePath($path, false);
         if (!is_string($path)) {
             $path = implode('/', $path);
         }
 
-        return $prefix.($absolute ? '/' : '').$path;
+        $path = $prefix.($absolute ? '/' : '').$path;
+        if ($options & self::NORM_ADD_TRAILING_SLASH) {
+            $path .= '/';
+        }
+
+        return $path;
     }
 
     /**
@@ -70,6 +78,18 @@ class Path
         return $prefix.($suffix != '' && $prefix != '' ? '/' : '').$suffix;
     }
 
+    /**
+     * it returns components of a path after normalization, in an array.
+     *
+     * - first element: for windows path, the drive part "C:", "C:" etc... always in uppercase
+     * - second element: the normalized path. as string or array depending of $alwaysArray
+     *                 when as string: no trailing slash.
+     * - third element: indicate if the given path is an absolute path (true) or not (false)
+     *
+     * @param bool $alwaysArray if true, second element is an array
+     *
+     * @return array
+     */
     protected static function _normalizePath($path, $alwaysArray)
     {
         $path = str_replace('\\', '/', $path);

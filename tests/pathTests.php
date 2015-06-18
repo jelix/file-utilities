@@ -43,6 +43,7 @@ class pathTests extends PHPUnit_Framework_TestCase {
     public function testNormalizePath() {
         $this->assertEquals('/', Path::normalizePath('/'));
         $this->assertEquals('/aaa/bbb/ccc', Path::normalizePath('/aaa/bbb/ccc/'));
+        $this->assertEquals('/aaa/bbb/ccc/', Path::normalizePath('/aaa/bbb/ccc/', true));
         $this->assertEquals('/aaa/bbb/ccc', Path::normalizePath('/aaa////bbb/ccc/'));
         $this->assertEquals('/aaa/bbb/ccc', Path::normalizePath('/aaa/./bbb/ccc/'));
         $this->assertEquals('/aaa/bbb/ccc', Path::normalizePath('/aaa/./bbb/ccc/.'));
