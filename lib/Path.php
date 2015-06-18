@@ -51,7 +51,7 @@ class Path
         list($fromprefix, $from, $fromabsolute) = self::_normalizePath($from, true);
         list($toprefix, $to, $toabsolute) = self::_normalizePath($to, true);
         if (!$fromabsolute || !$toabsolute) {
-            throw new \Exception('Absolute path is required');
+            throw new \InvalidArgumentException('Absolute path is required');
         }
         if ($fromprefix != $toprefix) {
             return $toprefix.'/'.rtrim(implode('/', $to), '/');

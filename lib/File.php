@@ -45,11 +45,10 @@ class File
         Directory::create($_dirname);
 
         if (!@is_writable($_dirname)) {
-            // cache_dir not writable, see if it exists
             if (!@is_dir($_dirname)) {
-                throw new \Exception('The directory '.$_dirname.' does not exists');
+                throw new \UnexpectedValueException('The directory '.$_dirname.' does not exists');
             }
-            throw new \Exception('The directory '.$_dirname.' is not writable');
+            throw new \RuntimeException('The directory '.$_dirname.' is not writable');
         }
 
         // write to tmp file, then rename it to avoid
@@ -59,7 +58,7 @@ class File
         if (!($fd = @fopen($_tmp_file, 'wb'))) {
             $_tmp_file = $_dirname.'/'.uniqid('jelix_');
             if (!($fd = @fopen($_tmp_file, 'wb'))) {
-                throw new \Exception('Cannot create temporary file '.$_tmp_file);
+                throw new \RuntimeException('Cannot create temporary file '.$_tmp_file);
             }
         }
 

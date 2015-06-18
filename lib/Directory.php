@@ -45,7 +45,7 @@ class Directory
     {
         // minimum security check
         if ($path == '' || $path == '/' || $path == DIRECTORY_SEPARATOR) {
-            throw new \Exception('The root cannot be removed !!');
+            throw new \InvalidArgumentException('The root cannot be removed !!');
         }
 
         if (!file_exists($path)) {
@@ -76,8 +76,8 @@ class Directory
     /**
      * Recursive function deleting all files into a directory except those indicated.
      *
-     * @param string $path         The path of the directory to remove recursively
-     * @param array  $except       filenames and suffix of filename, for files to NOT delete
+     * @param string $path      The path of the directory to remove recursively
+     * @param array  $except    filenames and suffix of filename, for files to NOT delete
      * @param bool   $deleteDir If the path must be deleted too
      *
      * @return bool true if all the content has been removed
@@ -87,11 +87,11 @@ class Directory
     public static function removeExcept($path, $except, $deleteDir = true)
     {
         if (!is_array($except) || !count($except)) {
-            throw new \Exception('list of exception is not an array or is empty');
+            throw new \InvalidArgumentException('list of exception is not an array or is empty');
         }
 
         if ($path == '' || $path == '/' || $path == DIRECTORY_SEPARATOR) {
-            throw new \Exception('The root cannot be removed !!');
+            throw new \InvalidArgumentException('The root cannot be removed !!');
         }
 
         if (!file_exists($path)) {
