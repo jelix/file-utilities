@@ -40,5 +40,10 @@
             "Jelix\\FileUtilities\\" : "lib/"
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "extra" : {
+        "branch-alias": {
+            "dev-master": "1.7.x-dev"
+        }
+    }
 }
