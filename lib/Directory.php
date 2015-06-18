@@ -68,7 +68,7 @@ class Directory
         unset($dirContent);
 
         // removes the parent directory
-        if ($deleteParent) {
+        if ($deleteDir) {
             rmdir($path);
         }
     }
@@ -78,13 +78,13 @@ class Directory
      *
      * @param string $path         The path of the directory to remove recursively
      * @param array  $except       filenames and suffix of filename, for files to NOT delete
-     * @param bool   $deleteParent If the path must be deleted too
+     * @param bool   $deleteDir If the path must be deleted too
      *
      * @return bool true if all the content has been removed
      *
      * @author Loic Mathaud
      */
-    public static function removeExcept($path, $except, $deleteParent = true)
+    public static function removeExcept($path, $except, $deleteDir = true)
     {
         if (!is_array($except) || !count($except)) {
             throw new \Exception('list of exception is not an array or is empty');
@@ -136,7 +136,7 @@ class Directory
         unset($dirContent);
 
         // removes the parent directory
-        if ($deleteParent && $allIsDeleted) {
+        if ($deleteDir && $allIsDeleted) {
             rmdir($path);
         }
 
