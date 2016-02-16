@@ -97,6 +97,7 @@ class Path
         $prefix = '';
         $absolute = false;
         if (preg_match('#^([a-z]:)/#i', $path, $m)) {
+            // support Windows path
             $prefix = strtoupper($m[1]);
             $path = substr($path, 2);
             $absolute = true;
@@ -104,6 +105,7 @@ class Path
             $absolute = ($path[0] == '/');
         }
         if ($absolute && $path != '') {
+            // remove leading '/' for path
             if ($path == '/') {
                 $path = '';
             } else {
@@ -112,6 +114,8 @@ class Path
         }
 
         if (strpos($path, './') === false && substr($path, -1) != '.') {
+            // if there is no relative path component like ../ or ./, we can
+            // return directly the path informations
             if ($alwaysArray) {
                 if ($path == '') {
                     return array($prefix, array(), $absolute);
@@ -132,7 +136,14 @@ class Path
         foreach ($path as $chunk) {
             if ($chunk === '..') {
                 if (count($path2)) {
-                    array_pop($path2);
+                    if (end($path2) != '..') {
+                        array_pop($path2);
+                    } else {
+                        $path2[] = '..';
+                    }
+                } elseif (!$absolute) {
+                    // for non absolute path, we keep leading '..'
+                    $path2[] = '..';
                 }
             } elseif ($chunk !== '' && $chunk != '.') {
                 $path2[] = $chunk;
