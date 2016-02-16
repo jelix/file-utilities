@@ -80,5 +80,17 @@ class pathTests extends PHPUnit_Framework_TestCase {
         $this->assertEquals('..', Path::normalizePath('../aaa/../ccc1/..'));
         $this->assertEquals('../../ccc2', Path::normalizePath('../aaa/../../ccc2'));
     }
+
+    public function testIsAbsolute() {
+        $this->assertTrue(Path::isAbsolute('/aaa/bbb'));
+        $this->assertTrue(Path::isAbsolute('c:\\aaa\\bbb'));
+        $this->assertTrue(Path::isAbsolute('c:\\'));
+        $this->assertTrue(Path::isAbsolute('/'));
+        $this->assertFalse(Path::isAbsolute('aaa'));
+        $this->assertFalse(Path::isAbsolute('../aaa'));
+        $this->assertFalse(Path::isAbsolute('.'));
+        $this->assertFalse(Path::isAbsolute('..'));
+
+    }
 }
 

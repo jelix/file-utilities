@@ -2,12 +2,11 @@
 
 /**
  * @author       Laurent Jouanneau
- * @copyright    2015 Laurent Jouanneau
+ * @copyright    2015-2016 Laurent Jouanneau
  *
  * @link         http://jelix.org
  * @licence      MIT
  */
-
 namespace Jelix\FileUtilities;
 
 class Path
@@ -19,7 +18,7 @@ class Path
      * support windows path.
      *
      * @param string $path
-     * @param int    $options see NORM_* const
+     * @param int    $options  see NORM_* const
      *
      * @return string the normalized path
      */
@@ -36,6 +35,20 @@ class Path
         }
 
         return $path;
+    }
+
+    /**
+     * says if the given path is an absolute one or not.
+     *
+     * @param string $path
+     *
+     * @return bool true if the path is absolute
+     */
+    public static function isAbsolute($path)
+    {
+        list($prefix, $path, $absolute) = self::_startNormalize($path);
+
+        return $absolute;
     }
 
     /**
@@ -92,18 +105,7 @@ class Path
      */
     protected static function _normalizePath($path, $alwaysArray)
     {
-        $path = str_replace('\\', '/', $path);
-        $path = preg_replace('#(/+)#', '/', $path);
-        $prefix = '';
-        $absolute = false;
-        if (preg_match('#^([a-z]:)/#i', $path, $m)) {
-            // support Windows path
-            $prefix = strtoupper($m[1]);
-            $path = substr($path, 2);
-            $absolute = true;
-        } else {
-            $absolute = ($path[0] == '/');
-        }
+        list($prefix, $path, $absolute) = self::_startNormalize($path);
         if ($absolute && $path != '') {
             // remove leading '/' for path
             if ($path == '/') {
@@ -151,5 +153,23 @@ class Path
         }
 
         return array($prefix, $path2, $absolute);
+    }
+
+    protected static function _startNormalize($path)
+    {
+        $path = str_replace('\\', '/', $path);
+        $path = preg_replace('#(/+)#', '/', $path);
+        $prefix = '';
+        $absolute = false;
+        if (preg_match('#^([a-z]:)/#i', $path, $m)) {
+            // support Windows path
+            $prefix = strtoupper($m[1]);
+            $path = substr($path, 2);
+            $absolute = true;
+        } else {
+            $absolute = ($path[0] == '/');
+        }
+
+        return array($prefix, $path, $absolute);
     }
 }
