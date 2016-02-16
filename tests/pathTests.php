@@ -53,6 +53,7 @@ class pathTests extends PHPUnit_Framework_TestCase {
         $this->assertEquals('/ccc', Path::normalizePath('/aaa/bbb/../../ccc/'));
         $this->assertEquals('/ccc', Path::normalizePath('/aaa/bbb/../../ccc/.'));
         $this->assertEquals('/aaa/ccc', Path::normalizePath('/aaa/./bbb/../ccc/'));
+        $this->assertEquals('/aaa/ccc', Path::normalizePath('/aaa/bbb/..////ccc/'));
         $this->assertEquals('/ccc', Path::normalizePath('/aaa/bbb/../../../../../ccc/'));
 
         $this->assertEquals('C:/', Path::normalizePath('C:\\'));
@@ -69,6 +70,7 @@ class pathTests extends PHPUnit_Framework_TestCase {
     public function testNormalizePath() {
         $this->assertEquals('aaa', Path::normalizePath('./aaa'));
         $this->assertEquals('aaa/ccc', Path::normalizePath('aaa/bbb/../ccc'));
+        $this->assertEquals('aaa/ccc', Path::normalizePath('aaa/////bbb/../ccc'));
         $this->assertEquals('../ccc', Path::normalizePath('aaa/bbb/../../../ccc'));
         $this->assertEquals('../aaa', Path::normalizePath('../aaa'));
         $this->assertEquals('../../../aaa', Path::normalizePath('../../../aaa'));
@@ -79,6 +81,17 @@ class pathTests extends PHPUnit_Framework_TestCase {
         $this->assertEquals('../ccc1', Path::normalizePath('../aaa/../ccc1'));
         $this->assertEquals('..', Path::normalizePath('../aaa/../ccc1/..'));
         $this->assertEquals('../../ccc2', Path::normalizePath('../aaa/../../ccc2'));
+    }
+
+    public function testNormalizePathWithOptionalBasePath() {
+        $this->assertEquals('/bbb/ccc/aaa', Path::normalizePath('./aaa',0,'/bbb/ccc/'));
+        $this->assertEquals('/bbb/ccc/aaa', Path::normalizePath('aaa',0,'/bbb/ccc/'));
+        $this->assertEquals('/bbb/aaa', Path::normalizePath('../aaa',0,'/bbb/ccc/'));
+        $this->assertEquals('/aaa', Path::normalizePath('../../aaa',0,'/bbb/ccc/'));
+        $this->assertEquals('/aaa', Path::normalizePath('../../../aaa',0,'/bbb/ccc/'));
+        $this->assertEquals('/aaa', Path::normalizePath('../../../../../aaa',0,'/bbb/ccc/'));
+        $this->assertEquals('/aaa', Path::normalizePath('/aaa',0,'/bbb/ccc/'));
+        $this->assertEquals('/aaa/vvv/r', Path::normalizePath('/aaa/uuu/../vvv/r',0,'/bbb/ccc/'));
     }
 
     public function testIsAbsolute() {

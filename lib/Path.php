@@ -16,15 +16,17 @@ class Path
     /**
      * normalize a path : translate '..', '.', replace '\' by '/' and so on..
      * support windows path.
+     * when $path is relative, it can be resolved against the given $basePath.
      *
      * @param string $path
      * @param int    $options  see NORM_* const
+     * @param string $basePath
      *
      * @return string the normalized path
      */
-    public static function normalizePath($path, $options = 0)
+    public static function normalizePath($path, $options = 0, $basePath = '')
     {
-        list($prefix, $path, $absolute) = self::_normalizePath($path, false);
+        list($prefix, $path, $absolute) = self::_normalizePath($path, false, $basePath);
         if (!is_string($path)) {
             $path = implode('/', $path);
         }
@@ -103,9 +105,12 @@ class Path
      *
      * @return array
      */
-    protected static function _normalizePath($path, $alwaysArray)
+    protected static function _normalizePath($originalPath, $alwaysArray, $basePath = '')
     {
-        list($prefix, $path, $absolute) = self::_startNormalize($path);
+        list($prefix, $path, $absolute) = self::_startNormalize($originalPath);
+        if (!$absolute && $basePath) {
+            list($prefix, $path, $absolute) = self::_startNormalize($basePath.'/'.$originalPath);
+        }
         if ($absolute && $path != '') {
             // remove leading '/' for path
             if ($path == '/') {
