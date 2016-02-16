@@ -16,6 +16,7 @@ class Path
     /**
      * normalize a path : translate '..', '.', replace '\' by '/' and so on..
      * support windows path.
+     * 
      * when $path is relative, it can be resolved against the given $basePath.
      *
      * @param string $path
@@ -65,8 +66,11 @@ class Path
     {
         list($fromprefix, $from, $fromabsolute) = self::_normalizePath($from, true);
         list($toprefix, $to, $toabsolute) = self::_normalizePath($to, true);
-        if (!$fromabsolute || !$toabsolute) {
-            throw new \InvalidArgumentException('Absolute path is required');
+        if (!$fromabsolute) {
+            throw new \InvalidArgumentException('The \'from\' path should be absolute');
+        }
+        if (!$toabsolute) {
+            throw new \InvalidArgumentException('The \'to\' path should be absolute');
         }
         if ($fromprefix != $toprefix) {
             return $toprefix.'/'.rtrim(implode('/', $to), '/');
