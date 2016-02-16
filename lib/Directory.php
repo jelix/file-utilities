@@ -7,24 +7,28 @@
  * @contributor  Bastien Jaillot
  * @contributor Julien Issler
  *
- * @copyright    2005-2015 Laurent Jouanneau, 2006 Christophe Thiriot, 2006 Loic Mathaud, 2008 Bastien Jaillot, 2009 Julien Issler
+ * @copyright    2005-2016 Laurent Jouanneau, 2006 Christophe Thiriot, 2006 Loic Mathaud, 2008 Bastien Jaillot, 2009 Julien Issler
  *
  * @link         http://jelix.org
  * @licence      MIT
  */
-
 namespace Jelix\FileUtilities;
 
 class Directory
 {
+    public static $defaultChmod = 0755;
+
     /**
      * create a directory.
      *
      * @return bool false if the directory did already exist
      */
-    public static function create($dir, $chmod = 0775)
+    public static function create($dir, $chmod = null)
     {
         if (!file_exists($dir)) {
+            if ($chmod === null) {
+                $chmod = self::$defaultChmod;
+            }
             mkdir($dir, $chmod, true);
 
             return true;

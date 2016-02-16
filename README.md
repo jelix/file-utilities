@@ -11,7 +11,7 @@ composer require "jelix/file-utilities"
 
 # history
 
-Most of methods of classes come originally from the jFile class of Jelix 1.7. http://jelix.org
+Most of methods of classes come originally from the jFile class of Jelix 1.6. http://jelix.org
 
 
 

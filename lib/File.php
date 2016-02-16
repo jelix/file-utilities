@@ -5,16 +5,17 @@
  * @contributor Julien Issler
  * @contributor  Gérald Croes
  *
- * @copyright    2001-2005 CopixTeam, 2005-2015 Laurent Jouanneau, 2010 Julien Issler
+ * @copyright    2001-2005 CopixTeam, 2005-2016 Laurent Jouanneau, 2010 Julien Issler
  *
  * @link         http://jelix.org
  * @licence      MIT
  */
-
 namespace Jelix\FileUtilities;
 
 class File
 {
+    public static $defaultChmod = null;
+
     /**
      * Reads the content of a file.
      *
@@ -33,6 +34,8 @@ class File
      * be smarter than us, avoiding a writing / reading while renaming the file.
      *
      * @author     Gérald Croes
+     * @contributor Laurent Jouanneau
+     *
      * @copyright  2001-2005 CopixTeam
      *
      * @link http://www.copix.org
@@ -71,6 +74,9 @@ class File
             unlink($file);
         }
         rename($_tmp_file, $file);
+        if ($chmod === null) {
+            $chmod = self::$defaultChmod;
+        }
         if ($chmod) {
             chmod($file, $chmod);
         }
