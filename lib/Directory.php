@@ -103,7 +103,7 @@ class Directory
         }
 
         $allIsDeleted = true;
-        $dir = new DirectoryIterator($path);
+        $dir = new \DirectoryIterator($path);
         foreach ($dir as $dirContent) {
             // test if the basename matches one of patterns
             $exception = false;
