@@ -8,27 +8,13 @@
  * @link         http://jelix.org
  * @licence      MIT
  */
-namespace Jelix\FileUtilities;
+namespace Jelix\FileUtilities\Instances;
 
-use Jelix\FileUtilities\Instances\PathUtil;
+use Jelix\FileUtilities\Path;
 
-class Path
+class PathUtil
 {
-    const NORM_ADD_TRAILING_SLASH = 1;
 
-    /**
-     * @var PathUtil
-     */
-    protected static $instance;
-    
-    protected static function getInstance()
-    {
-        if (! isset (self::$instance)) {
-            self::$instance = new PathUtil();
-        }
-        return self::$instance;
-    }
-    
     /**
      * normalize a path : translate '..', '.', replace '\' by '/' and so on..
      * support windows path.
@@ -41,9 +27,19 @@ class Path
      *
      * @return string the normalized path
      */
-    public static function normalizePath($path, $options = 0, $basePath = '')
+    public function normalizePath($path, $options = 0, $basePath = '')
     {
-        return self::getInstance()->normalizePath($path, $options, $basePath);
+        list($prefix, $path, $absolute) = $this->_normalizePath($path, false, $basePath);
+        if (!is_string($path)) {
+            $path = implode('/', $path);
+        }
+
+        $path = $prefix.($absolute ? '/' : '').$path;
+        if ($options & Path::NORM_ADD_TRAILING_SLASH) {
+            $path .= '/';
+        }
+
+        return $path;
     }
 
     /**
@@ -53,9 +49,11 @@ class Path
      *
      * @return bool true if the path is absolute
      */
-    public static function isAbsolute($path)
+    public function isAbsolute($path)
     {
-        return self::getInstance()->isAbsolute($path);
+        list($prefix, $path, $absolute) = $this->_startNormalize($path);
+
+        return $absolute;
     }
 
     /**
@@ -66,16 +64,42 @@ class Path
      *
      * @return string relative path between the two path
      */
-    public static function shortestPath($from, $to)
+    public function shortestPath($from, $to)
     {
-        return self::getInstance()->shortestPath($from, $to);
+        list($fromprefix, $from, $fromabsolute) = $this->_normalizePath($from, true);
+        list($toprefix, $to, $toabsolute) = $this->_normalizePath($to, true);
+        if (!$fromabsolute) {
+            throw new \InvalidArgumentException('The \'from\' path should be absolute');
+        }
+        if (!$toabsolute) {
+            throw new \InvalidArgumentException('The \'to\' path should be absolute');
+        }
+        if ($fromprefix != $toprefix) {
+            return $toprefix.'/'.rtrim(implode('/', $to), '/');
+        }
+        while (count($from) && count($to) && $from[0] == $to[0]) {
+            array_shift($from);
+            array_shift($to);
+        }
+
+        if (!count($from)) {
+            if (!count($to)) {
+                return '.';
+            }
+            $prefix = '';
+        } else {
+            $prefix = rtrim(str_repeat('../', count($from)), '/');
+        }
+        if (!count($to)) {
+            $suffix = '';
+        } else {
+            $suffix = implode('/', $to);
+        }
+
+        return $prefix.($suffix != '' && $prefix != '' ? '/' : '').$suffix;
     }
 
     /**
-     * @deprecated Should not use protected methods of the static interface anymore. To extend
-     *              the funtionality, the instance class should be extended.
-     * @see PathUtil
-     * 
      * it returns components of a path after normalization, in an array.
      *
      * - first element: for windows path, the drive part "C:", "C:" etc... always in uppercase
@@ -84,14 +108,15 @@ class Path
      * - third element: indicate if the given path is an absolute path (true) or not (false)
      *
      * @param bool $alwaysArray if true, second element is an array
+     * @param string $basePath
      *
      * @return array
      */
-    protected static function _normalizePath($originalPath, $alwaysArray, $basePath = '')
+    protected function _normalizePath($originalPath, $alwaysArray, $basePath = '')
     {
-        list($prefix, $path, $absolute) = self::_startNormalize($originalPath);
+        list($prefix, $path, $absolute) = $this->_startNormalize($originalPath);
         if (!$absolute && $basePath) {
-            list($prefix, $path, $absolute) = self::_startNormalize($basePath.'/'.$originalPath);
+            list($prefix, $path, $absolute) = $this->_startNormalize($basePath.'/'.$originalPath);
         }
         if ($absolute && $path != '') {
             // remove leading '/' for path
@@ -142,14 +167,7 @@ class Path
         return array($prefix, $path2, $absolute);
     }
 
-    /**
-     * @deprecated The instance class should be extended instead
-     * @see PathUtil
-     * 
-     * @param $path
-     * @return array
-     */
-    protected static function _startNormalize($path)
+    protected function _startNormalize($path)
     {
         $path = str_replace('\\', '/', $path);
         $path = preg_replace('#(/+)#', '/', $path);
