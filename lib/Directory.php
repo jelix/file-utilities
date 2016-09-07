@@ -30,7 +30,9 @@ class Directory
                 $chmod = self::$defaultChmod;
             }
             mkdir($dir, $chmod, true);
-
+            // php mkdir apply umask on the given mode, so we must to
+            // do a chmod manually.
+            chmod($dir, $chmod);
             return true;
         }
 
@@ -146,4 +148,22 @@ class Directory
 
         return $allIsDeleted;
     }
+
+    /**
+     * Copy a content directory into an other
+     * @param string $srcDir  the directory from which content will be copied
+     * @param string $destDir the directory in which content will be copied
+     */
+    static function copy($srcDir, $destDir) {
+        Path::create($destDir);
+
+        $dir = new \DirectoryIterator($srcDir);
+        foreach ($dir as $dirContent) {
+            if ($dirContent->isFile() || $dirContent->isLink()) {
+                copy($dirContent->getPathName(), $destDir.'/'.$dirContent->getFilename());
+            } else if (!$dirContent->isDot() && $dirContent->isDir()) {
+                self::copy($dirContent->getPathName(), $destDir.'/'.$dirContent->getFilename());
+            }
+        }
+    } 
 }
