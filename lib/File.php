@@ -5,7 +5,7 @@
  * @contributor Julien Issler
  * @contributor  Gérald Croes
  *
- * @copyright    2001-2005 CopixTeam, 2005-2016 Laurent Jouanneau, 2010 Julien Issler
+ * @copyright    2001-2005 CopixTeam, 2005-2017 Laurent Jouanneau, 2010 Julien Issler
  *
  * @link         http://jelix.org
  * @licence      MIT
@@ -112,11 +112,24 @@ class File
     public static function getMimeTypeFromFilename($fileName)
     {
         $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-        if (array_key_exists($ext, self::$mimeTypes)) {
+        if (array_key_exists($ext, self::$customMimeTypes)) {
+            return self::$customMimeTypes[$ext];
+        } else if (array_key_exists($ext, self::$mimeTypes)) {
             return self::$mimeTypes[$ext];
-        } else {
-            return 'application/octet-stream';
         }
+        return 'application/octet-stream';
+    }
+
+    protected static $customMimeTypes = array();
+
+    /**
+     * Register some mimetypes so they can be used by File::getMimeTypeFromFilename()
+     *
+     * @param array $mimeTypes list of mimetypes. Keys are file suffixes, values
+     *                         are mimetypes
+     */
+    public static function registerMimeTypes($mimeTypes) {
+        self::$customMimeTypes = array_merge(self::$customMimeTypes, $mimeTypes);
     }
 
     protected static $mimeTypes = array(

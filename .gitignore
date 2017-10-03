@@ -2,6 +2,7 @@ TAGS
 .DS_Store
 *.komodoproject
 .komodotools
+.idea
 vendor/
 composer.lock
 tests/temp/*
