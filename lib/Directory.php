@@ -7,7 +7,7 @@
  * @contributor  Bastien Jaillot
  * @contributor Julien Issler
  *
- * @copyright    2005-2016 Laurent Jouanneau, 2006 Christophe Thiriot, 2006 Loic Mathaud, 2008 Bastien Jaillot, 2009 Julien Issler
+ * @copyright    2005-2018 Laurent Jouanneau, 2006 Christophe Thiriot, 2006 Loic Mathaud, 2008 Bastien Jaillot, 2009 Julien Issler
  *
  * @link         http://jelix.org
  * @licence      MIT
@@ -153,14 +153,19 @@ class Directory
      * Copy a content directory into an other
      * @param string $srcDir  the directory from which content will be copied
      * @param string $destDir the directory in which content will be copied
+     * @param boolean $overwrite set to false to not overwrite existing files in
+     * the target directory
      */
-    static function copy($srcDir, $destDir) {
+    static function copy($srcDir, $destDir, $overwrite = true) {
         Path::create($destDir);
 
         $dir = new \DirectoryIterator($srcDir);
         foreach ($dir as $dirContent) {
             if ($dirContent->isFile() || $dirContent->isLink()) {
-                copy($dirContent->getPathName(), $destDir.'/'.$dirContent->getFilename());
+                $target = $destDir.'/'.$dirContent->getFilename();
+                if ($overwrite || !file_exists($target)) {
+                    copy($dirContent->getPathName(), $target);
+                }
             } else if (!$dirContent->isDot() && $dirContent->isDir()) {
                 self::copy($dirContent->getPathName(), $destDir.'/'.$dirContent->getFilename());
             }
