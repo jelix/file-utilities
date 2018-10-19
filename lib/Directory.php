@@ -157,7 +157,7 @@ class Directory
      * the target directory
      */
     static function copy($srcDir, $destDir, $overwrite = true) {
-        Path::create($destDir);
+        Directory::create($destDir);
 
         $dir = new \DirectoryIterator($srcDir);
         foreach ($dir as $dirContent) {
@@ -167,7 +167,7 @@ class Directory
                     copy($dirContent->getPathName(), $target);
                 }
             } else if (!$dirContent->isDot() && $dirContent->isDir()) {
-                self::copy($dirContent->getPathName(), $destDir.'/'.$dirContent->getFilename());
+                self::copy($dirContent->getPathName(), $destDir.'/'.$dirContent->getFilename(), $overwrite);
             }
         }
     } 
