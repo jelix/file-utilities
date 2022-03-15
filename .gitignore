@@ -7,3 +7,4 @@ vendor/
 composer.lock
 tests/temp/*
 !tests/temp/.dummy
+tests/.phpunit.result.cache

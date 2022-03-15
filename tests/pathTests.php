@@ -8,7 +8,7 @@
 
 use Jelix\FileUtilities\Path;
 
-class pathTests extends PHPUnit_Framework_TestCase {
+class pathTests extends \PHPUnit\Framework\TestCase {
 
     public function testShortestPath() {
         $this->assertEquals('.', Path::shortestPath('/', '/'));
