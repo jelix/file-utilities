@@ -5,7 +5,7 @@
  * @contributor Julien Issler
  * @contributor  Gérald Croes
  *
- * @copyright    2001-2005 CopixTeam, 2005-2017 Laurent Jouanneau, 2010 Julien Issler
+ * @copyright    2001-2005 CopixTeam, 2005-2022 Laurent Jouanneau, 2010 Julien Issler
  *
  * @link         http://jelix.org
  * @licence      MIT
@@ -64,8 +64,7 @@ class File
                 throw new \RuntimeException('Cannot create temporary file '.$_tmp_file);
             }
         }
-
-        fwrite($fd, $data);
+        fwrite($fd, (string)$data);
         fclose($fd);
 
         // Delete the file if it allready exists (this is needed on Windows,
