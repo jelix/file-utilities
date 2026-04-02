@@ -84,7 +84,7 @@ class Directory
      *
      * @param string $path      The path of the directory to remove recursively
      * @param array  $except    filenames and suffix of filename, for files to NOT delete
-     * @param bool   $deleteDir If the path must be deleted too
+     * @param bool   $deleteDir true if the directory must be deleted too, when it is empty
      *
      * @return bool true if all the content has been removed
      *

@@ -5,9 +5,9 @@
  * @contributor Julien Issler
  * @contributor  Gérald Croes
  *
- * @copyright    2001-2005 CopixTeam, 2005-2022 Laurent Jouanneau, 2010 Julien Issler
+ * @copyright    2001-2005 CopixTeam, 2005-2026 Laurent Jouanneau, 2010 Julien Issler
  *
- * @link         http://jelix.org
+ * @link         https://jelix.org
  * @licence      MIT
  */
 namespace Jelix\FileUtilities;
@@ -96,7 +96,9 @@ class File
     {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $type = finfo_file($finfo, $file);
-        finfo_close($finfo);
+        if (version_compare(PHP_VERSION, '8.5.0', '<')) {
+            finfo_close($finfo);
+        }
 
         return $type;
     }

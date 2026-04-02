@@ -3,6 +3,8 @@
   <testsuites>
     <testsuite name="FileUtilities tests">
       <file>pathTests.php</file>
+      <file>fileTests.php</file>
+      <file>directoryTests.php</file>
     </testsuite>
   </testsuites>
 </phpunit>
