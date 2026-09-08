@@ -2,6 +2,11 @@ Changelog
 =========
 
 
+1.8.7
+-----
+
+Fix php mime type.
+
 1.8.6
 -----
 

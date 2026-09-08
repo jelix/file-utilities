@@ -140,7 +140,7 @@ class File
         'html' => 'text/html',
         'xhtml' => 'application/xhtml+xml',
         'xht' => 'application/xhtml+xml',
-        'php' => 'text/html',
+        'php' => 'application/php',
         'css' => 'text/css',
         'js' => 'application/javascript',
         'json' => 'application/json',
