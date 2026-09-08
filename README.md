@@ -12,7 +12,9 @@ composer require "jelix/file-utilities"
 
 The `File` class allows you to read and write file contents. `write()` method
 allows changing the content of an existing file by not writing into it
-directly, avoiding write lock.
+directly, avoiding write lock. 
+
+It has also methods to get or to check the mime type of files.
 
 The `Directory` class allows to delete the content of a directory recursively,
 and even to do it without deleteting specific files.
