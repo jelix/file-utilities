@@ -84,6 +84,39 @@ class File
     }
 
     /**
+     * Verify the MIME type of file that is uploaded with an HTML form.
+     *
+     * The magic bytes and the extension filename are both checked.
+     *
+     * @param string $filePath the file for which we want to check the mime type
+     * @param string|array $allowedMimeTypes list of allowed mime types
+     * @param string $baseFileName the base filename if the filepath does not contain the real base filename (like uploaded files in forms)
+     * @return false|string false if the file does not meet requirements, else the mime type of the file
+     */
+    public static function verifyFileMimeType($filePath, $allowedMimeTypes, $baseFileName = '')
+    {
+        if ($baseFileName == '') {
+            $baseFileName = basename(str_replace('\\', '/', $filePath));
+        }
+        if (!is_array($allowedMimeTypes)) {
+            $allowedMimeTypes = array($allowedMimeTypes);
+        }
+        $mimetypeFromExtension = File::getMimeTypeFromFilename($baseFileName);
+        $mimetypeFromFile = File::getMimeType($filePath);
+        if ($mimetypeFromFile == 'application/octet-stream') {
+            $mimetypeFromFile = $mimetypeFromExtension;
+        }
+
+        // we don't authorize files having the wrong mime type, and files for which the extension filename
+        // does not correspond to the expected type mime, to avoid security issue like php file disguised as an image.
+        if (!in_array($mimetypeFromFile, $allowedMimeTypes) || $mimetypeFromFile != $mimetypeFromExtension) {
+            return false;
+        }
+
+        return $mimetypeFromFile;
+    }
+
+    /**
      * get the MIME Type of a file.
      *
      * @param string $file The full path of the file

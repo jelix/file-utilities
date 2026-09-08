@@ -5,7 +5,8 @@ Changelog
 1.8.7
 -----
 
-Fix php mime type.
+- Fix php mime type.
+- New method `File::verifyFileMimeType()` to verify strongly the MIME type of files that are uploaded with an HTML form. 
 
 1.8.6
 -----

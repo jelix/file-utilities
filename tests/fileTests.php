@@ -35,4 +35,19 @@ class fileTests extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals('test', File::read($fileName));
     }
+
+    public function testFileMimeType()
+    {
+        $file = __DIR__.'/assets/jelix_powered.png';
+        $this->assertEquals('image/png', File::verifyFileMimeType($file, 'image/png'));
+
+        $this->assertEquals('image/png', File::verifyFileMimeType($file, 'image/png', 'target.png'));
+
+        $this->assertFalse(File::verifyFileMimeType($file, 'image/gif'));
+
+        $this->assertFalse(File::verifyFileMimeType($file, 'image/png', 'target.gif'));
+
+        $this->assertFalse(File::verifyFileMimeType(__DIR__.'/assets/hole.php', 'image/gif', 'target.php'));
+    }
+
 }
